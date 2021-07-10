@@ -153,10 +153,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Header.h" />
+    <ClInclude Include="FancyLibrary.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="FancyLibrary.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

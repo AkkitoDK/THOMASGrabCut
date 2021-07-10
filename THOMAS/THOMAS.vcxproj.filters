@@ -18,12 +18,12 @@
     <ClInclude Include="framework.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Header.h">
+    <ClInclude Include="FancyLibrary.h">
       <Filter>Quelldateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
+    <ClCompile Include="FancyLibrary.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
