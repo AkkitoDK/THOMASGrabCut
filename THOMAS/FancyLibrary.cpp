@@ -8,7 +8,8 @@ using namespace cv;
 CascadeClassifier face_cascade;
 int middlex;
 int middley;
-
+const unsigned int BORDER = 5;
+const unsigned int BORDER2 = BORDER + BORDER;
 
 extern "C"{
 	cv::VideoCapture* cap;
@@ -26,15 +27,39 @@ extern "C"{
 		cv::Mat image;
 	
 		cv::Mat betterImage;
-		
-
-		BYTE* result;
 
 		(*cap) >> image;
 
+		Mat fram2 = image.clone();
+
+		// define bounding rectangle
+		cv::Rect rectangle(40, 90, image.cols - 80, image.rows - 170);
+
+		cv::Mat result1; // segmentation result (4 possible values)
+		cv::Mat bgModel, fgModel; // the models (internally used)
+
+		// GrabCut segmentation
+		cv::grabCut(image,    // input image
+			result1,   // segmentation result
+			rectangle,// rectangle containing foreground
+			bgModel, fgModel, // models
+			1,        // number of iterations
+			cv::GC_INIT_WITH_RECT); // use rectangle
+
+		// Get the pixels marked as likely foreground
+		cv::compare(result1, cv::GC_PR_FGD, result1, cv::CMP_EQ);
+		// Generate output image
+		cv::Mat foreground(image.size(), CV_8UC3, cv::Scalar(255, 255, 255));
+		//cv::Mat background(image.size(),CV_8UC3,cv::Scalar(255,255,255));
+		image.copyTo(foreground, result1); // bg pixels not copied
+
+		BYTE* result;
+
+		
+
 		//cv::flip(image, image, 0);
 
-		cv::cvtColor(image, betterImage, COLOR_BGR2BGRA, 4);
+		cv::cvtColor(foreground, betterImage, COLOR_BGR2BGRA, 4);
 
 		int size;
 		size = betterImage.cols * betterImage.rows * 4;
@@ -45,7 +70,7 @@ extern "C"{
 	}
 
 	
-
+	
 	
 	int Coordinates()
 	{
@@ -75,7 +100,7 @@ extern "C"{
 		for (size_t i = 0; i < faces.size(); i++)
 		{
 			Point center(faces[i].x + faces[i].width / 2, faces[i].y + faces[i].height / 2);
-			ellipse(frame, center, Size(faces[i].width / 2, faces[i].height / 2), 0, 0, 360, Scalar(255, 0, 255), 4);
+			//ellipse(frame, center, Size(faces[i].width / 2, faces[i].height / 2), 0, 0, 360, Scalar(255, 0, 255), 4);
 			Mat faceROI = frame_gray(faces[i]);
 
 			middlex = (faces[i].x + faces[i].width / 2);
